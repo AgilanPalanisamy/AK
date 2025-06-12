@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wedding Countdown Timer</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: #FFC0CB;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: white;
+      position: relative;
+      overflow: hidden;
+      background-image: url('https://via.placeholder.com/1600x900'); /* Background image */
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+
+    h1 {
+      font-size: 48px;
+      font-family: 'Dancing Script', cursive;
+      color: white;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+      z-index: 1;
+    }
+
+    .container {
+      width: 80%;
+      max-width: 800px;
+      background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+      margin-top: 50px;
+      z-index: 1;
+    }
+
+    .timer {
+      font-size: 36px;
+      font-weight: bold;
+      color: #ff1493;
+      margin-bottom: 15px;
+      text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    }
+
+    .detail-time {
+      font-size: 20px;
+      font-style: italic;
+      color: #fff;
+      margin-top: 10px;
+      text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    }
+
+    .heart {
+      font-size: 100px;
+      color: pink;
+      margin-top: 30px;
+      animation: heartBeat 1.5s infinite;
+      cursor: pointer;
+    }
+
+    .quote {
+      font-size: 24px;
+      font-family: 'Dancing Script', cursive;
+      color: #fff;
+      margin-top: 30px;
+      padding: 15px;
+      background-color: rgba(255, 255, 255, 0.3);
+      border-radius: 15px;
+      box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    .quote span {
+      color: #ff1493;
+      font-weight: bold;
+    }
+
+    /* Heartbeat animation */
+    @keyframes heartBeat {
+      0%, 100% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.1);
+      }
+    }
+
+    /* Flower Falling Animation */
+    @keyframes flowerFall {
+      0% {
+        top: -50px;
+        opacity: 1;
+      }
+      100% {
+        top: 100vh;
+        opacity: 0;
+      }
+    }
+
+    .flower {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      background-image: url('https://via.placeholder.com/30'); /* Placeholder for flower image */
+      background-size: cover;
+      animation: flowerFall 5s infinite;
+      opacity: 0;
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.7); /* Black background with opacity */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-content {
+      position: relative;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      width: 50%;
+      max-width: 600px;
+      opacity: 0;
+      transform: scale(0.5); /* Start small */
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    .modal-content img {
+      width: 100%;
+      border-radius: 10px;
+    }
+
+    .close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 36px;
+      color: #FFC0CB;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <h1>Our Wedding Countdown</h1>
+
+  <div class="container">
+    <div class="timer" id="timer">
+      <!-- Countdown timer will appear here -->
+    </div>
+
+    <div class="detail-time" id="detail-time">
+      <!-- Detailed time will appear here -->
+    </div>
+
+    <div class="heart" id="heart">
+      ❤️
+    </div>
+
+    <div class="quote">
+      <p>“Time spent with you is like a <span>love story</span> waiting to be written. Every moment we share brings us closer to forever.”</p>
+      <p><em>- A beautiful love story in the making</em></p>
+    </div>
+  </div>
+
+  <!-- Modal for showing the image -->
+  <div class="modal" id="myModal">
+    <div class="modal-content">
+      <span class="close" id="closeBtn">&times;</span>
+      <img src="https://raw.githubusercontent.com/Yoganandha-S/AK/main/Image.jpg" alt="Couple's Wedding Image">
+    </div>
+  </div>
+
+  <!-- Flower Falling Effect -->
+  <div class="flower" style="left: 10%"></div>
+  <div class="flower" style="left: 30%"></div>
+  <div class="flower" style="left: 50%"></div>
+  <div class="flower" style="left: 70%"></div>
+  <div class="flower" style="left: 90%"></div>
+
+  <script>
+    // Set the countdown end time (Wedding Date: September 4, 2025)
+    const END_TIME = new Date("Sep 4, 2025 00:00:00").getTime();
+
+    function updateTimer() {
+      const now = new Date().getTime();
+      const remaining = END_TIME - now;
+
+      if (remaining > 0) {
+        const days = Math.floor(remaining / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((remaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+
+        document.getElementById("timer").innerText = `${days}d ${hours}h ${minutes}m ${seconds}s remaining`;
+        document.getElementById("detail-time").innerText = `${days} day${days !== 1 ? 's' : ''}, ${hours} hour${hours !== 1 ? 's' : ''}, ${minutes} minute${minutes !== 1 ? 's' : ''}, ${seconds} second${seconds !== 1 ? 's' : ''} remaining`;
+      } else {
+        document.getElementById("timer").innerText = "Time's up!";
+        document.getElementById("detail-time").innerText = "The wedding is here!";
+      }
+    }
+
+    setInterval(updateTimer, 1000);  // Update the timer every second
+
+    // Open the Modal when clicking the heart emoji
+    const heart = document.getElementById("heart");
+    const modal = document.getElementById("myModal");
+    const modalContent = document.querySelector('.modal-content');
+    const closeBtn = document.getElementById("closeBtn");
+
+    heart.onclick = function() {
+      modal.style.display = "flex";
+      setTimeout(() => {
+        modalContent.style.transform = "scale(1)";
+        modalContent.style.opacity = "1";
+      }, 10);
+      modal.style.opacity = "1";
+    }
+
+    closeBtn.onclick = function() {
+      modal.style.display = "none";
+      modalContent.style.transform = "scale(0.5)";
+      modalContent.style.opacity = "0";
+    }
+
+    // Close the modal if the user clicks outside of the modal
+    window.onclick = function(event) {
+      if (event.target == modal) {
+        modal.style.display = "none";
+        modalContent.style.transform = "scale(0.5)";
+        modalContent.style.opacity = "0";
+      }
+    }
+
+  </script>
+
+</body>
+</html>
